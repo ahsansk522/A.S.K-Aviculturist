@@ -1,0 +1,703 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A.S.K Aviculturist - Shopping Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+    }
+
+    body{
+      background:#f4f7fb;
+      color:#1e293b;
+    }
+
+    :root{
+      --primary:#0f172a;
+      --secondary:#2563eb;
+      --light:#ffffff;
+      --gray:#64748b;
+      --border:#e2e8f0;
+      --success:#16a34a;
+    }
+
+    header{
+      background:linear-gradient(135deg,#0f172a,#2563eb);
+      color:white;
+      padding:28px 18px;
+      text-align:center;
+    }
+
+    header h1{
+      font-size:2rem;
+      margin-bottom:8px;
+    }
+
+    header p{
+      opacity:.9;
+      font-size:.95rem;
+    }
+
+    .top-info{
+      margin-top:12px;
+      font-size:.9rem;
+      line-height:1.8;
+    }
+
+    .container{
+      width:min(1200px,92%);
+      margin:auto;
+      padding:25px 0 90px;
+    }
+
+    .filters{
+      display:flex;
+      gap:10px;
+      overflow:auto;
+      padding-bottom:10px;
+      margin-bottom:22px;
+    }
+
+    .filters button{
+      border:none;
+      background:white;
+      padding:10px 18px;
+      border-radius:50px;
+      cursor:pointer;
+      border:1px solid var(--border);
+      transition:.3s;
+      white-space:nowrap;
+      font-weight:500;
+    }
+
+    .filters button.active,
+    .filters button:hover{
+      background:var(--secondary);
+      color:white;
+    }
+
+    .products{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:20px;
+    }
+
+    .card{
+      background:white;
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 5px 18px rgba(0,0,0,.06);
+      transition:.3s;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .card:hover{
+      transform:translateY(-4px);
+    }
+
+    .card img{
+      width:100%;
+      height:220px;
+      object-fit:cover;
+      background:#ddd;
+    }
+
+    .card-content{
+      padding:15px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      flex:1;
+    }
+
+    .card h3{
+      font-size:1rem;
+      line-height:1.4;
+    }
+
+    .price{
+      color:var(--secondary);
+      font-weight:700;
+      font-size:1.1rem;
+    }
+
+    .desc{
+      color:var(--gray);
+      font-size:.88rem;
+      line-height:1.5;
+      flex:1;
+    }
+
+    .category{
+      font-size:.75rem;
+      background:#eff6ff;
+      color:#1d4ed8;
+      padding:6px 12px;
+      width:max-content;
+      border-radius:50px;
+    }
+
+    .add-btn{
+      border:none;
+      background:var(--primary);
+      color:white;
+      padding:12px;
+      border-radius:10px;
+      cursor:pointer;
+      transition:.3s;
+      font-weight:600;
+    }
+
+    .add-btn:hover{
+      background:var(--secondary);
+    }
+
+    .cart-float{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      width:62px;
+      height:62px;
+      border-radius:50%;
+      background:var(--secondary);
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.6rem;
+      cursor:pointer;
+      box-shadow:0 10px 25px rgba(37,99,235,.35);
+      z-index:999;
+    }
+
+    .cart-count{
+      position:absolute;
+      top:-4px;
+      right:-4px;
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      background:#ef4444;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.75rem;
+      font-weight:700;
+    }
+
+    .cart-modal,
+    .checkout-modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.5);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:1000;
+      padding:15px;
+    }
+
+    .modal-content{
+      background:white;
+      width:100%;
+      max-width:550px;
+      border-radius:20px;
+      padding:22px;
+      max-height:90vh;
+      overflow:auto;
+      animation:pop .25s ease;
+    }
+
+    @keyframes pop{
+      from{transform:scale(.9);opacity:0}
+      to{transform:scale(1);opacity:1}
+    }
+
+    .modal-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:18px;
+    }
+
+    .close{
+      background:#ef4444;
+      color:white;
+      border:none;
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      cursor:pointer;
+      font-size:1rem;
+    }
+
+    .cart-item{
+      display:flex;
+      gap:12px;
+      margin-bottom:18px;
+      border-bottom:1px solid var(--border);
+      padding-bottom:15px;
+    }
+
+    .cart-item img{
+      width:90px;
+      height:90px;
+      border-radius:12px;
+      object-fit:cover;
+    }
+
+    .cart-details{
+      flex:1;
+    }
+
+    .qty-controls{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .qty-controls button{
+      border:none;
+      background:var(--secondary);
+      color:white;
+      width:28px;
+      height:28px;
+      border-radius:6px;
+      cursor:pointer;
+    }
+
+    .remove-btn{
+      margin-top:10px;
+      border:none;
+      background:#fee2e2;
+      color:#b91c1c;
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+    }
+
+    .total{
+      font-size:1.2rem;
+      font-weight:700;
+      margin:20px 0;
+      text-align:right;
+    }
+
+    .checkout-btn,
+    .submit-btn{
+      width:100%;
+      border:none;
+      background:var(--success);
+      color:white;
+      padding:14px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:1rem;
+      font-weight:600;
+    }
+
+    form{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    input,textarea{
+      width:100%;
+      padding:14px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      outline:none;
+      font-size:.95rem;
+    }
+
+    .whatsapp-btn{
+      position:fixed;
+      left:18px;
+      bottom:18px;
+      background:#25D366;
+      color:white;
+      padding:14px 18px;
+      border-radius:50px;
+      text-decoration:none;
+      font-weight:600;
+      box-shadow:0 10px 25px rgba(0,0,0,.15);
+      z-index:999;
+    }
+
+    .empty{
+      text-align:center;
+      color:var(--gray);
+      padding:30px 0;
+    }
+
+    .success-message{
+      background:#dcfce7;
+      color:#166534;
+      padding:14px;
+      border-radius:12px;
+      margin-bottom:15px;
+      display:none;
+    }
+
+    footer{
+      background:var(--primary);
+      color:white;
+      text-align:center;
+      padding:25px 15px;
+      margin-top:30px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>A.S.K Aviculturist</h1>
+  <p>Get Your Thing Delivered At Your Door Step</p>
+
+  <div class="top-info">
+    📍 Peshawar Pakistan <br>
+    📞 0333-9140638 <br>
+    ✉️ ahsankhanaviculturist@gmail.com
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="filters">
+    <button class="active" onclick="filterProducts('All',this)">All</button>
+    <button onclick="filterProducts('Electronics',this)">Electronics</button>
+    <button onclick="filterProducts('Accessories',this)">Accessories</button>
+    <button onclick="filterProducts('Birds Accessories',this)">Birds Accessories</button>
+    <button onclick="filterProducts('Unique Gadgets',this)">Unique Gadgets</button>
+  </div>
+
+  <div class="products" id="products"></div>
+</div>
+
+<div class="cart-float" onclick="openCart()">
+  🛒
+  <div class="cart-count" id="cartCount">0</div>
+</div>
+
+<a class="whatsapp-btn" href="https://wa.me/923339140638" target="_blank">
+  Chat on WhatsApp
+</a>
+
+<div class="cart-modal" id="cartModal">
+  <div class="modal-content">
+    <div class="modal-head">
+      <h2>Your Cart</h2>
+      <button class="close" onclick="closeCart()">✕</button>
+    </div>
+
+    <div id="cartItems"></div>
+
+    <div class="total" id="cartTotal">Total: Rs 0</div>
+
+    <button class="checkout-btn" onclick="openCheckout()">Place Order</button>
+  </div>
+</div>
+
+<div class="checkout-modal" id="checkoutModal">
+  <div class="modal-content">
+
+    <div class="modal-head">
+      <h2>Checkout</h2>
+      <button class="close" onclick="closeCheckout()">✕</button>
+    </div>
+
+    <div class="success-message" id="successMessage">
+      Order placed! A.S.K Aviculturist will contact you on WhatsApp to confirm.
+      <br><br>
+      <a href="https://wa.me/923339140638" target="_blank">Click here to WhatsApp us</a>
+    </div>
+
+    <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" id="orderForm">
+
+      <input type="text" name="customer_name" placeholder="Your Name" required>
+      <input type="tel" name="phone" placeholder="Phone Number" required>
+      <textarea name="address" rows="3" placeholder="Delivery Address" required></textarea>
+      <textarea name="instructions" rows="3" placeholder="Special Instructions (Optional)"></textarea>
+
+      <input type="hidden" name="order_summary" id="orderSummary">
+      <input type="hidden" name="grand_total" id="grandTotalInput">
+
+      <button type="submit" class="submit-btn">Submit Order</button>
+    </form>
+
+  </div>
+</div>
+
+<footer>
+  <h3>A.S.K Aviculturist</h3>
+  <p>Your trusted local online shopping partner in Peshawar.</p>
+</footer>
+
+<script>
+const products = [
+  {
+    id:1,
+    name:'Kamal Metallic Ear Buds',
+    price:7999,
+    category:'Electronics',
+    image:'https://i.ibb.co/cKchgTnt/image.jpg',
+    desc:'Premium metallic earbuds with crystal clear sound.'
+  },
+  {
+    id:2,
+    name:'Miracase iPhone 15 Pro Case',
+    price:6999,
+    category:'Accessories',
+    image:'https://i.ibb.co/RnsWPzX/image.jpg',
+    desc:'Original Miracase premium protection case.'
+  },
+  {
+    id:3,
+    name:'Smart Charging Dock',
+    price:4999,
+    category:'Electronics',
+    image:'https://i.ibb.co/xSfkRXn3/image.jpg',
+    desc:'Fast charging dock for multiple devices.'
+  },
+  {
+    id:4,
+    name:'Bird Cage Water Feeder',
+    price:1499,
+    category:'Birds Accessories',
+    image:'https://i.ibb.co/1tzWk1CS/image.jpg',
+    desc:'Easy refill feeder for all pet birds.'
+  },
+  {
+    id:5,
+    name:'Mini LED Night Lamp',
+    price:1999,
+    category:'Unique Gadgets',
+    image:'https://i.ibb.co/Zz9Hkr3P/image.jpg',
+    desc:'Portable aesthetic lamp for desk and bedroom.'
+  },
+  {
+    id:6,
+    name:'Wireless Gaming Mouse',
+    price:3499,
+    category:'Electronics',
+    image:'https://i.ibb.co/bgK1t1V9/image.jpg',
+    desc:'Smooth wireless gaming experience with RGB.'
+  },
+  {
+    id:7,
+    name:'Bird Nest Box',
+    price:1799,
+    category:'Birds Accessories',
+    image:'https://i.ibb.co/Vprx3Rbf/image.jpg',
+    desc:'Comfortable wooden nesting box for birds.'
+  },
+  {
+    id:8,
+    name:'Premium Phone Stand',
+    price:999,
+    category:'Accessories',
+    image:'https://i.ibb.co/0yzXmQs1/image.jpg',
+    desc:'Foldable aluminum phone stand for desk use.'
+  },
+  {
+    id:9,
+    name:'Portable Bluetooth Speaker',
+    price:5999,
+    category:'Electronics',
+    image:'https://i.ibb.co/0yP5JYKC/image.jpg',
+    desc:'Deep bass wireless speaker with long battery.'
+  },
+  {
+    id:10,
+    name:'USB Smart Fan',
+    price:1599,
+    category:'Unique Gadgets',
+    image:'https://i.ibb.co/hxdPfjKy/image.jpg',
+    desc:'Compact cooling fan powered by USB.'
+  }
+];
+
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function renderProducts(items){
+  const container = document.getElementById('products');
+
+  container.innerHTML = items.map(product => `
+    <div class="card">
+      <img src="${product.image}" alt="${product.name}" loading="lazy">
+
+      <div class="card-content">
+        <div class="category">${product.category}</div>
+        <h3>${product.name}</h3>
+        <div class="price">Rs ${product.price.toLocaleString()}</div>
+        <p class="desc">${product.desc}</p>
+
+        <button class="add-btn" onclick="addToCart(${product.id})">
+          Add to Cart
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+renderProducts(products);
+updateCartCount();
+
+function filterProducts(category,btn){
+  document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+
+  if(category === 'All'){
+    renderProducts(products);
+  }else{
+    renderProducts(products.filter(p=>p.category===category));
+  }
+}
+
+function addToCart(id){
+  const item = cart.find(i=>i.id===id);
+
+  if(item){
+    item.qty += 1;
+  }else{
+    const product = products.find(p=>p.id===id);
+    cart.push({...product, qty:1});
+  }
+
+  saveCart();
+  updateCartCount();
+}
+
+function saveCart(){
+  localStorage.setItem('cart',JSON.stringify(cart));
+}
+
+function updateCartCount(){
+  const totalItems = cart.reduce((sum,item)=>sum+item.qty,0);
+  document.getElementById('cartCount').innerText = totalItems;
+}
+
+function openCart(){
+  document.getElementById('cartModal').style.display='flex';
+  renderCart();
+}
+
+function closeCart(){
+  document.getElementById('cartModal').style.display='none';
+}
+
+function renderCart(){
+  const cartItems = document.getElementById('cartItems');
+
+  if(cart.length===0){
+    cartItems.innerHTML = `<div class="empty">Your cart is empty.</div>`;
+    document.getElementById('cartTotal').innerText = 'Total: Rs 0';
+    return;
+  }
+
+  cartItems.innerHTML = cart.map(item=>`
+    <div class="cart-item">
+      <img src="${item.image}" alt="${item.name}">
+
+      <div class="cart-details">
+        <h4>${item.name}</h4>
+        <p>Rs ${item.price.toLocaleString()}</p>
+        <p>Subtotal: Rs ${(item.price * item.qty).toLocaleString()}</p>
+
+        <div class="qty-controls">
+          <button onclick="changeQty(${item.id},-1)">-</button>
+          <span>${item.qty}</span>
+          <button onclick="changeQty(${item.id},1)">+</button>
+        </div>
+
+        <button class="remove-btn" onclick="removeItem(${item.id})">
+          Remove
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+  const total = cart.reduce((sum,item)=>sum+(item.price*item.qty),0);
+  document.getElementById('cartTotal').innerText = `Total: Rs ${total.toLocaleString()}`;
+}
+
+function changeQty(id,val){
+  const item = cart.find(i=>i.id===id);
+  item.qty += val;
+
+  if(item.qty<=0){
+    cart = cart.filter(i=>i.id!==id);
+  }
+
+  saveCart();
+  renderCart();
+  updateCartCount();
+}
+
+function removeItem(id){
+  cart = cart.filter(i=>i.id!==id);
+  saveCart();
+  renderCart();
+  updateCartCount();
+}
+
+function openCheckout(){
+  if(cart.length===0){
+    alert('Your cart is empty!');
+    return;
+  }
+
+  document.getElementById('checkoutModal').style.display='flex';
+
+  const summary = cart.map(item=>
+    `${item.name} | Qty: ${item.qty} | Price: Rs ${item.price} | Subtotal: Rs ${item.price * item.qty}`
+  ).join('\n');
+
+  const total = cart.reduce((sum,item)=>sum+(item.price*item.qty),0);
+
+  document.getElementById('orderSummary').value = summary;
+  document.getElementById('grandTotalInput').value = `Rs ${total}`;
+}
+
+function closeCheckout(){
+  document.getElementById('checkoutModal').style.display='none';
+}
+
+const form = document.getElementById('orderForm');
+
+form.addEventListener('submit',function(){
+  localStorage.removeItem('cart');
+  cart=[];
+  updateCartCount();
+
+  setTimeout(()=>{
+    document.getElementById('successMessage').style.display='block';
+  },500);
+});
+
+window.onclick = function(e){
+  if(e.target === document.getElementById('cartModal')){
+    closeCart();
+  }
+
+  if(e.target === document.getElementById('checkoutModal')){
+    closeCheckout();
+  }
+}
+</script>
+
+</body>
+</html>
+```
